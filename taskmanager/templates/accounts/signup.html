@@ -1,6 +1,16 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% if messages %}
+<div class="container mt-3">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
@@ -9,24 +19,22 @@
                     <h3 class="text-center">Sign Up</h3>
                 </div>
                 <div class="card-body">
-                    <form method="POST">
+                    <form method="POST" action="{% url 'signup' %}">
                         {% csrf_token %}
+                        {% for field in form %}
                         <div class="form-group mb-3">
-                            <label for="username">Username</label>
-                            <input type="text" class="form-control" id="username" name="username" required>
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.help_text %}
+                            <small class="form-text text-muted">{{ field.help_text }}</small>
+                            {% endif %}
+                            {% if field.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ field.errors|join:', ' }}
+                            </div>
+                            {% endif %}
                         </div>
-                        <div class="form-group mb-3">
-                            <label for="email">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="password1">Password</label>
-                            <input type="password" class="form-control" id="password1" name="password1" required>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="password2">Confirm Password</label>
-                            <input type="password" class="form-control" id="password2" name="password2" required>
-                        </div>
+                        {% endfor %}
                         <button type="submit" class="btn btn-primary w-100">Sign Up</button>
                     </form>
                 </div>
