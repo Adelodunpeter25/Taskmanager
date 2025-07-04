@@ -44,3 +44,8 @@ def logout_view(request):
 def profile_view(request):
     return render(request, 'accounts/profile.html', {'user': request.user})
 
+def home_view(request):
+    if request.user.is_authenticated:
+        return render(request, 'accounts/dashboard.html')
+    else:
+        return render(request, 'accounts/home.html')
